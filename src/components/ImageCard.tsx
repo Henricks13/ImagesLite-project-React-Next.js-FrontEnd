@@ -1,10 +1,10 @@
 'use client'
 
 interface ImageCardProps {
-    nome?: String;
+    nome?: string;
     tamanho?: number;
-    dataUpload?: String;
-    src?: String;
+    dataUpload?: string;
+    src?: string;
     extension?: string;
 }
 
