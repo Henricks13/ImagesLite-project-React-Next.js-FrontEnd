@@ -1,21 +1,44 @@
+'use client'
 import { InputText, Template, Button } from "@/components"
 import Link from "next/link"
+import {useFormik} from 'formik'
 
-export default function GaleriaPage() {
+interface FormProps{
+    name: string;
+    tags: string;
+    file: any;
+
+}
+
+const formScheme: FormProps = {name: '', tags: '', file: ''}
+
+export default function FormularioPage(){
+
+  const formik = useFormik({
+    initialValues: formScheme,
+    onSubmit: (dados: FormProps) => {
+      console.log(dados)
+    }
+  })
+
   return (
     <Template>
       <section className="flex flex-col items-center justify-center my-5">
         <h5 className="mt-3 mb-10 text-3x1 font-extrabold tracking-tight text-gray-900">Nova Imagem</h5>
-        <form action="">
+        <form onSubmit={formik.handleSubmit} action="">
 
           <div className=" grid grid-cols-1">
             <label className=" block text-sm font-medium leading-6 text-gray-600">Name: *</label>
-            <InputText  placeholder="Type the image's name"/>
+            <InputText id="name" 
+                      onChange={formik.handleChange} 
+                      placeholder="Type the image's name"/>
           </div>
 
           <div className="mt-5 grid grid-cols-1">
             <label className=" block text-sm font-medium leading-6 text-gray-600">Tags: *</label>
-            <InputText  placeholder="Type the tags comma separated"/>
+            <InputText id="tags" 
+                       onChange={formik.handleChange} 
+                       placeholder="Type the tags comma separated"/>
           </div>
 
           <div className="mt-5 grid grid-cols-1">
