@@ -16,6 +16,7 @@ const formScheme: FormProps = {name: '', tags: '', file: ''}
 
 export default function FormularioPage(){
 
+  const [loading, setLoading] = useState<boolean>(false)
   const [imagePreview, setImagePreview] = useState<string>();
   const service = useImageService();
 
@@ -25,6 +26,7 @@ export default function FormularioPage(){
   })
 
    async function handleSubmit(dados: FormProps){
+    setLoading(true)
     const formData = new FormData();
     formData.append("file", dados.file)
     formData.append("name", dados.name)
@@ -33,7 +35,9 @@ export default function FormularioPage(){
     await service.salvar(formData);
 
     formik.resetForm();
-    setImagePreview('')
+    setImagePreview('');
+
+    setLoading(false)
   }
 
   function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
@@ -46,7 +50,7 @@ export default function FormularioPage(){
   }
 
   return (
-    <Template>
+    <Template loading={loading}>
       <section className="flex flex-col items-center justify-center my-5">
         <h5 className="mt-3 mb-10 text-3x1 font-extrabold tracking-tight text-gray-900">Nova Imagem</h5>
         <form onSubmit={formik.handleSubmit} action="">
@@ -55,6 +59,7 @@ export default function FormularioPage(){
             <label className=" block text-sm font-medium leading-6 text-gray-600">Name: *</label>
             <InputText id="name" 
                       onChange={formik.handleChange} 
+                      value={formik.values.name}
                       placeholder="Type the image's name"/>
           </div>
 
@@ -62,6 +67,7 @@ export default function FormularioPage(){
             <label className=" block text-sm font-medium leading-6 text-gray-600">Tags: *</label>
             <InputText id="tags" 
                        onChange={formik.handleChange} 
+                       value={formik.values.tags}
                        placeholder="Type the tags comma separated"/>
           </div>
 
