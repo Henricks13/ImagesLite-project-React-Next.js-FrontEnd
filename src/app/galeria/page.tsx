@@ -26,6 +26,7 @@ export default function GaleriaPage() {
                    src={image.url}
                    key={image.url} 
                    tamanho={image.size} 
+                   extension={image.extension}
                    dataUpload={image.uploadDate} />
     )
   }
