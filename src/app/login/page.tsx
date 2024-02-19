@@ -1,14 +1,21 @@
 'use client'
 
-import { Template, RenderIf, InputText,Button, FieldError } from "@/components"
+import { Template, RenderIf, InputText,Button, FieldError, useNotification } from "@/components"
 import { useState } from "react"
 import { loginForm, formScheme, validationScheme } from "./formScheme"
 import { useFormik } from "formik"
+import { useAuth } from "@/resources"
+import { useRouter } from "next/navigation"
+import { AccessToken, Credentials } from "@/resources/user/users.resources"
 
 export default function login(){
 
     const [loading, setLoading] = useState<boolean>(false)
-    const [newUserState , setNewUserState] = useState<boolean>(true)
+    const [newUserState , setNewUserState] = useState<boolean>(false)
+
+    const auth = useAuth();
+    const notification = useNotification();
+    const router = useRouter();
 
     const { values, handleChange, handleSubmit, errors} = useFormik<loginForm>({
         initialValues: formScheme,
@@ -17,7 +24,17 @@ export default function login(){
     });
 
     async function onSubmit(values: loginForm){
-        console.log(values)
+        if(!newUserState){
+            const credentials: Credentials = { email:values.email, password: values.password }
+            try{
+               const accessToken: AccessToken = await auth.authenticate(credentials)
+               router.push("/galeria")
+            }
+            catch(error: any) {
+                const message = error?.message;
+                notification.notify(message, "error")
+            }
+        }
     }
 
 
@@ -104,7 +121,7 @@ export default function login(){
                                 </RenderIf>
 
                                 <RenderIf condition={!newUserState}>
-                                    <Button type="button" 
+                                    <Button type="submit" 
                                             style="bg-indigo-700 hover:bg-indigo-500" 
                                             label="Login"/>
 

@@ -4,7 +4,7 @@ class AuthService {
     baseURL: string = "http://localhost:8080/v1/users";
     static AUTH_PARAM: string = "_auth";
 
-    async authenticatesas(credentials: Credentials)  : Promise<AccessToken>{
+    async authenticate(credentials: Credentials)  : Promise<AccessToken>{
         const response = await fetch(this.baseURL + "/auth", {
             method: "POST",
             body: JSON.stringify(credentials),
