@@ -41,7 +41,6 @@ class AuthService {
     initSession(token : AccessToken){
         if(token.accessToken){
             const decodedToken: any = jwt(token.accessToken);
-            console.log("DECODED TOKEN: ", decodedToken);
 
             const userSessionToken: UserSessionToken = {
                 accessToken: token.accessToken,
@@ -56,6 +55,35 @@ class AuthService {
     setUserSession(userSessionToken: UserSessionToken){
             localStorage.setItem(AuthService.AUTH_PARAM,JSON.stringify(userSessionToken));
          }
+         
+    getUserSession() : UserSessionToken | null {
+        const authString = localStorage.getItem(AuthService.AUTH_PARAM);
+        if(!authString){
+            return null
+        }
+
+         const token: UserSessionToken = JSON.parse(authString)
+         return token;
     }
 
-    export const useAuth = () => new AuthService();
+    isSessionValid() : boolean{
+        const userSession: UserSessionToken | null = this.getUserSession();
+        if(!userSession){
+            return false;
+        }
+
+        const expiration: number | undefined = userSession.expiration;
+        if(expiration){ 
+            const expirationDateInMilis = expiration * 1000;
+            return new Date() < new Date(expirationDateInMilis)
+        }
+       
+        return false;
+
+    }
+
+}
+
+    
+
+export const useAuth = () => new AuthService();
